@@ -2,3 +2,8 @@
 *.pyc
 *__pycache__*
 *AWSCLIV2.pkg
+*.egg-info
+*.ipynb_checkpoints
+*.pkl
+*.zip
+submission/*

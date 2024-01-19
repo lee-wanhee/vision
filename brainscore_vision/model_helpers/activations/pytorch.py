@@ -79,7 +79,12 @@ class PytorchWrapper:
 
     @classmethod
     def _tensor_to_numpy(cls, output):
-        return output.cpu().data.numpy()
+        try:
+            print("Output shape:", output.shape)
+            return output.cpu().data.numpy()
+        except:
+            print("Output shape:", output[0].shape)
+            return output[0].cpu().data.numpy()
 
     def register_hook(self, layer, layer_name, target_dict):
         def hook_function(_layer, _input, output, name=layer_name):
