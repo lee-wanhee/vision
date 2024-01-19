@@ -51,7 +51,7 @@ def get_model():
     preprocessing = functools.partial(load_preprocess_images_torch, processor=processor, image_size=image_size)
 
     # get brainscore wrapper
-    wrapper = PytorchWrapper(identifier='vit-base-patch16-224-in21k_debug1118', model=custom_wrapper, preprocessing=preprocessing)
+    wrapper = PytorchWrapperV2(identifier='vit-base-patch16-224-in21k_debug1118', model=custom_wrapper, preprocessing=preprocessing)
     wrapper.image_size = image_size
     return wrapper
 
@@ -61,6 +61,18 @@ def load_preprocess_images_torch(image_filepaths, processor, image_size, **kwarg
     images = [processor(images=image, return_tensors="pt", **kwargs) for image in images]
     images = [image['pixel_values'] for image in images]
     images = torch.cat(images)
-    images = images.cpu()
+    # images = images.cpu()
     return images
 
+class PytorchWrapperV2(PytorchWrapper):
+    def __init__(self, identifier, model, preprocessing):
+        super().__init__(identifier, model, preprocessing)
+
+    @classmethod
+    def _tensor_to_numpy(cls, output):
+        try:
+            print("Output shape:", output.shape)
+            return output.cpu().data.numpy()
+        except:
+            print("Output shape:", output[0].shape)
+            return output[0].cpu().data.numpy()
